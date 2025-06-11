@@ -25,7 +25,7 @@ pip install treasure-island # stable
 
 ## Credit
 
-If you use Aegean or any or `treasure_island` for your research please give credit by citing:
+If you use `treasure_island` for your research please give credit to the orginal Aegean by citing:
 
 - Paper 1, [Hancock et al 2012, MNRAS, 422, 1812](http://adsabs.harvard.edu/abs/2012MNRAS.422.1812H)
 - Paper 2, [Hancock et al 2018, PASA, 35, 11H](http://adsabs.harvard.edu/abs/2018PASA...35...11H)
