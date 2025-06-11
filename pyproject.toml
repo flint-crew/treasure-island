@@ -58,7 +58,7 @@ AeRes = "treasure_island.CLI.AeRes:main"
 MIMAS = "treasure_island.CLI.MIMAS:main"
 AeReg = "treasure_island.CLI.AeReg:main"
 fix_beam = "treasure_island.CLI.fix_beam:main"
-BANE_fft = "treasure_island.CLI.BANE_fft:main"
+BANE_fft = "treasure_island.BANE_fft:cli"
 
 [tool.hatch]
 version.source = "vcs"
