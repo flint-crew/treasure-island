@@ -136,7 +136,7 @@ def fft_average(
 
     smooth_fft = image_fft * kernel_fft
 
-    smooth = fft.irfft2(smooth_fft) / kernel.sum()
+    smooth = fft.irfft2(smooth_fft, s=image_padded.shape) / kernel.sum()
 
     smooth_cut =  smooth[
         pad_x:-pad_x,
@@ -551,10 +551,6 @@ def robust_bane(
         y_slice = slice(start_idx, stop_y, step_size_pix)
         image_mask = image_mask[(y_slice, x_slice)]
         logging.info(f"Downsampled image to {image_mask.shape}")
-        for i in range(2):
-            assert image.shape[i] % 2 == 0, (
-                "Downsampled image must have even number of pixels"
-            )
 
         # Create zoom factor for upsampling
         zoom_x = image.shape[1] / image_mask.shape[1]
@@ -562,8 +558,6 @@ def robust_bane(
         zoom = (zoom_y, zoom_x)
 
     # Run the FFT
-    from IPython import embed
-    embed()
     mean, avg_rms = bane_fft(image_mask, kernel)
     # Catch small values
     mean = np.nan_to_num(mean, nan=0.0)
