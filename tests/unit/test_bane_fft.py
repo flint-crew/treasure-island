@@ -12,7 +12,13 @@ from astropy.wcs import WCS
 from numpy.typing import NDArray
 from radio_beam import Beam
 
-from treasure_island.BANE_fft import bane_fft, gaussian_kernel, pad_reflect, robust_bane, _ft_kernel
+from treasure_island.BANE_fft import (
+    bane_fft,
+    gaussian_kernel,
+    pad_reflect,
+    robust_bane,
+    _ft_kernel,
+)
 
 rng = np.random.default_rng(12345)
 logging.basicConfig(format="%(module)s:%(levelname)s %(message)s")
@@ -38,6 +44,7 @@ def ranmdom_arrays() -> RandomArrays:
         for i in range(n_arrays)
     ]
     return RandomArrays(arrays, locs, scales)
+
 
 @pytest.fixture
 def ranmdom_arrays_odd() -> RandomArrays:
@@ -68,13 +75,14 @@ def test_pad_reflect(ranmdom_arrays: RandomArrays):
             pad_width=(pad_size, pad_size),
             mode="reflect",
         )
-        expected_shape = (array.shape[0] + pad_size*2, array.shape[1] + pad_size*2)
+        expected_shape = (array.shape[0] + pad_size * 2, array.shape[1] + pad_size * 2)
         assert np.array_equal(array_pad, array_pad_np), (
             "Pad function with reflect mode failed"
         )
         assert array_pad.shape == expected_shape, (
             f"Bad shape {array_pad.shape} != {expected_shape}"
         )
+
 
 def test_pad_reflect_odd(ranmdom_arrays_odd: RandomArrays):
     """
@@ -96,6 +104,7 @@ def test_pad_reflect_odd(ranmdom_arrays_odd: RandomArrays):
         )
         assert image.shape == image_unpadded.shape
 
+
 def test_fft_odd(ranmdom_arrays_odd: RandomArrays):
     """
     Test the FFT function on odd-sized arrays.
@@ -111,15 +120,18 @@ def test_fft_odd(ranmdom_arrays_odd: RandomArrays):
         # Keeping them commented out for reference
         # kernel_fft = _ft_kernel(kernel, shape=image_padded.shape)
 
-        smooth_fft = image_fft # * kernel_fft
+        smooth_fft = image_fft  # * kernel_fft
 
-        smooth = fft.irfft2(smooth_fft, s=image_padded.shape) # / kernel.sum()
+        smooth = fft.irfft2(smooth_fft, s=image_padded.shape)  # / kernel.sum()
 
-        smooth_cut =  smooth[
+        smooth_cut = smooth[
             pad_x:-pad_x,
             pad_y:-pad_y,
         ]
-        assert smooth_cut.shape == image.shape, f"Bad shape after irfft2 {smooth_cut.shape} != {image.shape}"
+        assert smooth_cut.shape == image.shape, (
+            f"Bad shape after irfft2 {smooth_cut.shape} != {image.shape}"
+        )
+
 
 def test_bane_fft(ranmdom_arrays: RandomArrays):
     gaussian_kernel_arr = gaussian_kernel(10)

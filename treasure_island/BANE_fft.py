@@ -138,7 +138,7 @@ def fft_average(
 
     smooth = fft.irfft2(smooth_fft, s=image_padded.shape) / kernel.sum()
 
-    smooth_cut =  smooth[
+    smooth_cut = smooth[
         pad_x:-pad_x,
         pad_y:-pad_y,
     ]
