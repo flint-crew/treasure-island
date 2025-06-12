@@ -136,12 +136,14 @@ def fft_average(
 
     smooth_fft = image_fft * kernel_fft
 
-    smooth = fft.irfft2(smooth_fft) / kernel.sum()
+    smooth = fft.irfft2(smooth_fft, s=image_padded.shape) / kernel.sum()
 
-    return smooth[
+    smooth_cut = smooth[
         pad_x:-pad_x,
         pad_y:-pad_y,
     ]
+    assert smooth_cut.shape == image.shape
+    return smooth_cut
 
 
 @nb.njit(
@@ -549,10 +551,6 @@ def robust_bane(
         y_slice = slice(start_idx, stop_y, step_size_pix)
         image_mask = image_mask[(y_slice, x_slice)]
         logging.info(f"Downsampled image to {image_mask.shape}")
-        for i in range(2):
-            assert image.shape[i] % 2 == 0, (
-                "Downsampled image must have even number of pixels"
-            )
 
         # Create zoom factor for upsampling
         zoom_x = image.shape[1] / image_mask.shape[1]
@@ -796,7 +794,7 @@ def main(
     # Check for frequency axis and Stokes axis
     logging.info(f"Opening FITS file {fits_file}")
     with fits.open(fits_file, memmap=True, mode="denywrite") as hdul:
-        data = hdul[ext].data
+        data = hdul[ext].data.astype(np.float32)
         header = hdul[ext].header
 
     if all_in_mem:
