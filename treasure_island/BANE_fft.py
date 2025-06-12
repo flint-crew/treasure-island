@@ -138,10 +138,12 @@ def fft_average(
 
     smooth = fft.irfft2(smooth_fft) / kernel.sum()
 
-    return smooth[
+    smooth_cut =  smooth[
         pad_x:-pad_x,
         pad_y:-pad_y,
     ]
+    assert smooth_cut.shape == image.shape
+    return smooth_cut
 
 
 @nb.njit(
@@ -560,6 +562,8 @@ def robust_bane(
         zoom = (zoom_y, zoom_x)
 
     # Run the FFT
+    from IPython import embed
+    embed()
     mean, avg_rms = bane_fft(image_mask, kernel)
     # Catch small values
     mean = np.nan_to_num(mean, nan=0.0)
@@ -796,7 +800,7 @@ def main(
     # Check for frequency axis and Stokes axis
     logging.info(f"Opening FITS file {fits_file}")
     with fits.open(fits_file, memmap=True, mode="denywrite") as hdul:
-        data = hdul[ext].data
+        data = hdul[ext].data.astype(np.float32)
         header = hdul[ext].header
 
     if all_in_mem:
