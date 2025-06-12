@@ -45,9 +45,10 @@ You can install via pip using
 pip install git+https://github.com/flint-crew/treasure-island # latest
 ```
 
-```bash
+<!-- Enable when we publish -->
+<!-- ```bash
 pip install treasure-island # stable
-```
+``` -->
 
 ## Credit
 
