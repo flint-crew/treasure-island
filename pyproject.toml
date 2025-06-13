@@ -41,6 +41,7 @@ SR6 = "AegeanTools.CLI.SR6:main"
 AeRes = "AegeanTools.CLI.AeRes:main"
 MIMAS = "AegeanTools.CLI.MIMAS:main"
 AeReg = "AegeanTools.CLI.AeReg:main"
+BANE_fft = "AegeanTools.BANE_fft:cli"
 
 [project.urls]
 Repository = "https://github.com/PaulHancock/Aegean"
