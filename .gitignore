@@ -17,3 +17,6 @@ wiki/
 doc/_build/
 .vscode
 env/*
+AegeanTools/__pycache__
+AegeanTools/test.ipynb
+test.ipynb
