@@ -20,7 +20,8 @@ dependencies = [
     "configargparse>=1.7",
     "rocket-fft>=0.2.3",
     "numba>=0.58",
-    "radio-beam"
+    "radio-beam",
+    "matplotlib"
 ]
 classifiers=[
     "Development Status :: 5 - Production/Stable",
