@@ -17,7 +17,10 @@ dependencies = [
     "healpy >=1.10",
     "lmfit>=0.9.2",
     "scikit-learn>=0.24.2",
-    "configargparse>=1.7"
+    "configargparse>=1.7",
+    "rocket-fft>=0.2.3",
+    "numba>=0.58",
+    "radio-beam"
 ]
 classifiers=[
     "Development Status :: 5 - Production/Stable",
