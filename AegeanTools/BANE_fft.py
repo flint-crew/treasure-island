@@ -247,6 +247,7 @@ def get_kernel(
     Returns:
         Tuple[NDArray[np.float32], float]: The kernel and sum of the kernel
     """
+    from radio_beam.beam import NoBeamException
 
     logging.info(f"{step_size=}, {box_size=}")
     if step_size is None or step_size < 0 or box_size is None or box_size < 0:
@@ -257,8 +258,8 @@ def get_kernel(
             scales = proj_plane_pixel_scales(WCS(header)) * u.deg / u.pixel
             pix_per_beam = beam.minor / scales.min()
             logging.info(f"Pixels per beam: {pix_per_beam:0.1f}")
-        except ValueError:
-            msg = "Could not parse beam from header - try specifying step size"
+        except (ValueError, NoBeamException):
+            msg = "Could not parse beam from header - try specifying step size (--step-size)"
             raise ValueError(msg)
 
     if step_size is None or step_size < 0:
@@ -794,7 +795,7 @@ def main(
     # Check for frequency axis and Stokes axis
     logging.info(f"Opening FITS file {fits_file}")
     with fits.open(fits_file, memmap=True, mode="denywrite") as hdul:
-        data = hdul[ext].data.astype(np.float32)
+        data = hdul[ext].data
         header = hdul[ext].header
 
     if all_in_mem:
