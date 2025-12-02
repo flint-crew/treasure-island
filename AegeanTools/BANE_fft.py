@@ -259,7 +259,7 @@ def get_kernel(
             pix_per_beam = beam.minor / scales.min()
             logging.info(f"Pixels per beam: {pix_per_beam:0.1f}")
         except (ValueError, NoBeamException):
-            msg = "Could not parse beam from header - try specifying step size (--step-size)"
+            msg = "Could not parse beam from header - try specifying step size (--step-size) and box size (--box-size)"
             raise ValueError(msg)
 
     if step_size is None or step_size < 0:
