@@ -680,8 +680,15 @@ def bane_3d_loop(
         fits.open(bkg_file, memmap=True, mode="update") as bkg_hdul,
     ):
         rms = rms_hdul[ext].data
+        original_rms_shape = rms.data.shape
+        rms = rms.reshape((-1, original_rms_shape[-2], original_rms_shape[-1]))
+        
         bkg = bkg_hdul[ext].data
-        logging.info(f"Running BANE on plane {idx}")
+        original_bkg_shape = bkg.data.shape
+        bkg = bkg.reshape((-1, original_bkg_shape[-2], original_rms_shape[-1]))
+        
+
+        logging.info(f"Running BANE on plane {idx}, {bkg.data.shape=} {rms.data.shape=}")
         bkg[idx], rms[idx] = robust_bane(
             plane.astype(np.float32),
             header,
