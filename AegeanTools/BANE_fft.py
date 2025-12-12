@@ -247,6 +247,7 @@ def get_kernel(
     Returns:
         Tuple[NDArray[np.float32], float]: The kernel and sum of the kernel
     """
+    from radio_beam.beam import NoBeamException
 
     logging.info(f"{step_size=}, {box_size=}")
     if step_size is None or step_size < 0 or box_size is None or box_size < 0:
@@ -257,8 +258,8 @@ def get_kernel(
             scales = proj_plane_pixel_scales(WCS(header)) * u.deg / u.pixel
             pix_per_beam = beam.minor / scales.min()
             logging.info(f"Pixels per beam: {pix_per_beam:0.1f}")
-        except ValueError:
-            msg = "Could not parse beam from header - try specifying step size"
+        except (ValueError, NoBeamException):
+            msg = "Could not parse beam from header - try specifying step size (--step-size) and box size (--box-size)"
             raise ValueError(msg)
 
     if step_size is None or step_size < 0:
@@ -679,8 +680,15 @@ def bane_3d_loop(
         fits.open(bkg_file, memmap=True, mode="update") as bkg_hdul,
     ):
         rms = rms_hdul[ext].data
+        original_rms_shape = rms.data.shape
+        rms = rms.reshape((-1, original_rms_shape[-2], original_rms_shape[-1]))
+        
         bkg = bkg_hdul[ext].data
-        logging.info(f"Running BANE on plane {idx}")
+        original_bkg_shape = bkg.data.shape
+        bkg = bkg.reshape((-1, original_bkg_shape[-2], original_rms_shape[-1]))
+        
+
+        logging.info(f"Running BANE on plane {idx}, {bkg.data.shape=} {rms.data.shape=}")
         bkg[idx], rms[idx] = robust_bane(
             plane.astype(np.float32),
             header,
@@ -794,7 +802,7 @@ def main(
     # Check for frequency axis and Stokes axis
     logging.info(f"Opening FITS file {fits_file}")
     with fits.open(fits_file, memmap=True, mode="denywrite") as hdul:
-        data = hdul[ext].data.astype(np.float32)
+        data = hdul[ext].data
         header = hdul[ext].header
 
     if all_in_mem:
